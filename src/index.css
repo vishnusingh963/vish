@@ -1,0 +1,301 @@
+:root {
+  --ink: #16140F;
+  --ink-soft: #4a463d;
+  --paper: #ECE8DD;
+  --paper-raised: #F5F2E9;
+  --line: rgba(22, 20, 15, 0.18);
+  --line-strong: rgba(22, 20, 15, 0.42);
+  --hazard: #F5B300;
+  --alert: #B23A22;
+  --alert-bg: #F1DAC9;
+  --safe: #24523C;
+  --safe-bg: #DCE6D3;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.55;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.05;
+  background-image: radial-gradient(var(--ink) 0.7px, transparent 0.7px);
+  background-size: 5px 5px;
+}
+
+.wrap {
+  max-width: 1140px;
+  margin: auto;
+  padding: 0 28px;
+}
+
+.mono { font-family: "IBM Plex Mono", monospace; }
+
+.hazard-rule {
+  height: 7px;
+  background: repeating-linear-gradient(135deg, var(--hazard) 0 14px, var(--ink) 14px 28px);
+  background-size: 39.6px 100%;
+  animation: stripeSlide 2.6s linear infinite;
+}
+
+@keyframes stripeSlide {
+  from { background-position: 0 0; }
+  to { background-position: 39.6px 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---- entrance ---- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ---- scanner ticket ---- */
+.ticket-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px dashed var(--line-strong);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.75rem;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--alert);
+  display: inline-block;
+  margin-right: 6px;
+  animation: pulse 1.6s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+.verdict-stamp {
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 600;
+  font-size: 0.78rem;
+  padding: 5px 10px;
+  border: 2px solid currentColor;
+  transform: rotate(-3deg);
+  display: inline-block;
+}
+
+/* ---- steps list (how it works) ---- */
+.step-row p { color: var(--ink-soft); margin: 4px 0 0; font-size: 0.92rem; }
+
+/* ---- feature grid ---- */
+.feature-mark {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.75rem;
+  color: var(--alert);
+  margin-bottom: 12px;
+}
+
+/* ---- tech stack panel ---- */
+.stack-panel {
+  background: var(--ink);
+  color: var(--paper-raised);
+  padding: 56px 44px;
+}
+
+.stack-panel p { color: #b9b3a2; max-width: 52ch; }
+
+/* ---- footer ---- */
+footer.site-footer {
+  background: var(--ink);
+  color: #9c9686;
+  padding: 28px 0;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.78rem;
+}
+
+footer.site-footer strong { color: var(--paper-raised); }
+
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr !important; }
+  .ant-menu.mono { display: none; }
+}
+
+/* =========================================================
+   SCROLL-REVEAL SYSTEM
+   One primitive (.reveal / .in-view, toggled by <Reveal>),
+   different motion per section so it doesn't read as one
+   repeated "fade up" trick.
+========================================================= */
+
+/* default: rise + fade (used for section headers) */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* feature cards: staggered rise */
+.stagger-rise > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stagger-rise.in-view > * { opacity: 1; transform: translateY(0); }
+
+.stagger-rise.in-view > *:nth-child(1) { transition-delay: 0.02s; }
+.stagger-rise.in-view > *:nth-child(2) { transition-delay: 0.08s; }
+.stagger-rise.in-view > *:nth-child(3) { transition-delay: 0.14s; }
+.stagger-rise.in-view > *:nth-child(4) { transition-delay: 0.2s; }
+.stagger-rise.in-view > *:nth-child(5) { transition-delay: 0.26s; }
+.stagger-rise.in-view > *:nth-child(6) { transition-delay: 0.32s; }
+
+/* steps: slide in from the left, one at a time, with the connector line */
+.stagger-slide .ant-steps-item {
+  opacity: 0;
+  transform: translateX(-26px);
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stagger-slide.in-view .ant-steps-item {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.stagger-slide.in-view .ant-steps-item:nth-child(1) { transition-delay: 0.05s; }
+.stagger-slide.in-view .ant-steps-item:nth-child(2) { transition-delay: 0.2s; }
+.stagger-slide.in-view .ant-steps-item:nth-child(3) { transition-delay: 0.35s; }
+.stagger-slide.in-view .ant-steps-item:nth-child(4) { transition-delay: 0.5s; }
+
+.stagger-slide .ant-steps-item-tail::after,
+.stagger-slide .ant-steps-item-icon {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* tags: pop in */
+.stagger-pop > * {
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.stagger-pop.in-view > * { opacity: 1; transform: scale(1); }
+
+.stagger-pop.in-view > *:nth-child(1) { transition-delay: 0.02s; }
+.stagger-pop.in-view > *:nth-child(2) { transition-delay: 0.06s; }
+.stagger-pop.in-view > *:nth-child(3) { transition-delay: 0.1s; }
+.stagger-pop.in-view > *:nth-child(4) { transition-delay: 0.14s; }
+.stagger-pop.in-view > *:nth-child(5) { transition-delay: 0.18s; }
+.stagger-pop.in-view > *:nth-child(6) { transition-delay: 0.22s; }
+
+/* CTA card: rise + scale */
+.reveal-scale {
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-scale.in-view { opacity: 1; transform: translateY(0) scale(1); }
+
+/* =========================================================
+   HOVER MICRO-INTERACTIONS
+========================================================= */
+
+.feature-card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.feature-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(22, 20, 15, 0.12);
+}
+
+.stat-block { transition: background-color 0.25s ease; }
+.stat-block:hover { background-color: rgba(22, 20, 15, 0.03); }
+
+/* =========================================================
+   SCAN ANIMATION
+========================================================= */
+
+.scan-target {
+  position: relative;
+  overflow: hidden;
+}
+
+.scan-target.is-scanning textarea {
+  border-color: var(--alert) !important;
+}
+
+.scan-sweep {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--hazard), var(--alert), transparent);
+  box-shadow: 0 0 14px rgba(245, 179, 0, 0.55);
+  animation: sweep 1.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes sweep {
+  0% { top: 0; opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.scan-phase {
+  margin-top: 10px;
+  font-size: 0.74rem;
+  color: var(--ink-soft);
+  animation: fadeUp 0.3s ease both;
+}
+
+.verdict-panel { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both, stampSettle 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+@keyframes stampSettle {
+  from { transform: scale(0.97) rotate(-0.6deg); }
+  to { transform: scale(1) rotate(0deg); }
+}
+
+.verdict-stamp { animation: stampIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both; }
+
+@keyframes stampIn {
+  from { opacity: 0; transform: scale(1.4) rotate(-3deg); }
+  to { opacity: 1; transform: scale(1) rotate(-3deg); }
+}
+
+.verdict-line {
+  opacity: 0;
+  animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
